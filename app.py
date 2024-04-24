@@ -56,7 +56,7 @@ class Hotel(Resource):
         result = HotelModel.query.filter_by(id=hotel_id).first()
         if not result:
             abort(404, message="Could not find hotel with that id")
-        return result
+        return result, 200
 
     @marshal_with(resource_fields)
     def put(self, hotel_id):
