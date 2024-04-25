@@ -4,12 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 db = SQLAlchemy(app)
 
 
 class HotelModel(db.Model):
-    __tablename__ = 'hotels'
+    __tablename__ = "hotels"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     city = db.Column(db.String(100), nullable=False)
@@ -22,9 +22,9 @@ class HotelModel(db.Model):
 db.create_all()
 
 hotel_put_args = reqparse.RequestParser()
-hotel_put_args.add_argument("name", type=str, help="Name is required", required=True)
-hotel_put_args.add_argument("city", type=str, help="City is required", required=True)
-hotel_put_args.add_argument("address", type=str, help="Address is required", required=True)
+hotel_put_args.add_argument("name", type=str, help="Name is required")
+hotel_put_args.add_argument("city", type=str, help="City is required")
+hotel_put_args.add_argument("address", type=str, help="Address is required")
 
 hotel_update_args = reqparse.RequestParser()
 hotel_update_args.add_argument("name", type=str, help="Name is required")
@@ -45,8 +45,8 @@ class Hotels(Resource):
     def get(self):
         result = HotelModel.query.all()
         if not result:
-            abort(404, message="Could not find hotel with that id")
-        return result
+            abort(404, message="Could not find any hotel")
+        return result, 200
 
 
 class Hotel(Resource):
@@ -55,12 +55,19 @@ class Hotel(Resource):
     def get(self, hotel_id):
         result = HotelModel.query.filter_by(id=hotel_id).first()
         if not result:
-            abort(404, message="Could not find hotel with that id")
+            abort(404, message="Could not find a hotel with that id")
         return result, 200
 
     @marshal_with(resource_fields)
     def put(self, hotel_id):
         args = hotel_put_args.parse_args()
+        if not args['name']:
+            abort(400, message="Missing name, cannot insert")
+        elif not args['city']:
+            abort(400, message="Missing city, cannot insert")
+        elif not args['address']:
+            abort(400, message="Missing address, cannot insert")
+
         result = HotelModel.query.filter_by(id=hotel_id).first()
         if result:
             abort(409, message="Hotel id taken")
@@ -73,6 +80,9 @@ class Hotel(Resource):
     @marshal_with(resource_fields)
     def patch(self, hotel_id):
         args = hotel_update_args.parse_args()
+        if not (args['name'] or args['city'] or args['address']):
+            abort(400, message="Missing all parameters, cannot update")
+
         result = HotelModel.query.filter_by(id=hotel_id).first()
         if not result:
             abort(404, message="Hotel doesn't exist, cannot update")
@@ -90,7 +100,6 @@ class Hotel(Resource):
 
     @marshal_with(resource_fields)
     def delete(self, hotel_id):
-        args = hotel_update_args.parse_args()
         result = HotelModel.query.filter_by(id=hotel_id).first()
         if not result:
             abort(404, message="Hotel doesn't exist, cannot delete")
