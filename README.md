@@ -63,33 +63,6 @@ API methods are defined as follows:
           }
 
 
-## [/api/hotels/<hotel_id>]
-
-| String Parameters | Description        |
-|-------------------|--------------------|
-| hotel_id          | Use: `Integer > 0` |
-
-### [GET]
-
-+ Request (`hotel_id`)
-
-    + Response 200 (application/json)
-
-          + Body
-          {
-              "id": 1,
-              "name": "Name1",
-              "city": "City1",
-              "address": "Address1"
-          }
-
-    + Response 404 (application/json)
-
-          + Body
-          {
-              "message": "Could not find hotel with that id"
-          }
-
 ### [PUT]
 
 | JSON Parameters | Description       |
@@ -126,12 +99,31 @@ API methods are defined as follows:
               "message": "Missing *JSON Parameter*, cannot insert"
           }
 
-+ Response 409 (application/json)
+## [/api/hotels/<hotel_id>]
 
-    + Body
+| String Parameters | Description        |
+|-------------------|--------------------|
+| hotel_id          | Use: `Integer > 0` |
 
+### [GET]
+
++ Request (`hotel_id`)
+
+    + Response 200 (application/json)
+
+          + Body
           {
-              "message": "Hotel id taken"
+              "id": 1,
+              "name": "Name1",
+              "city": "City1",
+              "address": "Address1"
+          }
+
+    + Response 404 (application/json)
+
+          + Body
+          {
+              "message": "Could not find hotel with that id"
           }
 
 ### [PATCH]

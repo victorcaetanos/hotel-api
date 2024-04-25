@@ -48,6 +48,23 @@ class Hotels(Resource):
             abort(404, message="Could not find any hotel")
         return result, 200
 
+    @marshal_with(resource_fields)
+    def put(self):
+        args = hotel_put_args.parse_args()
+        if not args:
+            abort(400, message="Missing name, cannot insert")
+        if not args['name']:
+            abort(400, message="Missing name, cannot insert")
+        elif not args['city']:
+            abort(400, message="Missing city, cannot insert")
+        elif not args['address']:
+            abort(400, message="Missing address, cannot insert")
+
+        hotel = HotelModel(name=args['name'], city=args['city'], address=args['address'])
+        db.session.add(hotel)
+        db.session.commit()
+        return hotel, 201
+
 
 class Hotel(Resource):
 
@@ -57,25 +74,6 @@ class Hotel(Resource):
         if not result:
             abort(404, message="Could not find a hotel with that id")
         return result, 200
-
-    @marshal_with(resource_fields)
-    def put(self, hotel_id):
-        args = hotel_put_args.parse_args()
-        if not args['name']:
-            abort(400, message="Missing name, cannot insert")
-        elif not args['city']:
-            abort(400, message="Missing city, cannot insert")
-        elif not args['address']:
-            abort(400, message="Missing address, cannot insert")
-
-        result = HotelModel.query.filter_by(id=hotel_id).first()
-        if result:
-            abort(409, message="Hotel id taken")
-
-        hotel = HotelModel(id=hotel_id, name=args['name'], city=args['city'], address=args['address'])
-        db.session.add(hotel)
-        db.session.commit()
-        return hotel, 201
 
     @marshal_with(resource_fields)
     def patch(self, hotel_id):
