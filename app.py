@@ -1,11 +1,22 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 
 app = Flask(__name__)
-api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
+PREFIX = "/api"
+api = Api(app, prefix=PREFIX)
+
+SWAGGER_URL = f'{PREFIX}/docs/'
+API_URL = '/static/swagger.json'
+swagger_ui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={'app_name': "API-Hotel"})
+app.register_blueprint(swagger_ui_blueprint)
+
 db = SQLAlchemy(app)
+
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 class HotelModel(db.Model):
@@ -15,11 +26,24 @@ class HotelModel(db.Model):
     city = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(100), nullable=False)
 
-    def __repr__(self):
-        return f"Hotel(name = {self.name}, city = {self.city}, address = {self.address})"
-
 
 db.create_all()
+db.session.add(HotelModel(
+    name="Hotel California",
+    city="Los Angeles",
+    address="1670 Ocean Avenue"
+))
+db.session.add(HotelModel(
+    name="Hotel Transylvania",
+    city="Hunedoara",
+    address="Piața Iuliu Maniu, no. 11"
+))
+db.session.add(HotelModel(
+    name="The Plaza",
+    city="New York",
+    address="Fifth Avenue at Central Park South"
+))
+db.session.commit()
 
 hotel_put_args = reqparse.RequestParser()
 hotel_put_args.add_argument("name", type=str, help="Name is required")
@@ -108,8 +132,11 @@ class Hotel(Resource):
         return "", 204
 
 
-api.add_resource(Hotel, "/api/hotels/<int:hotel_id>")
-api.add_resource(Hotels, "/api/hotels/")
+api.add_resource(Hotel, "/hotels/<int:hotel_id>")
+api.add_resource(Hotels, "/hotels/")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    host = "127.0.0.1"
+    port = "5000"
+    debug = True
+    app.run(host=host, port=port, debug=debug)

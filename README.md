@@ -20,7 +20,6 @@ API methods are defined as follows:
 | `204` | Successful request not carrying a payload body. |
 | `400` | Requested made with invalid syntax.             |
 | `404` | Requested information not found.                |
-| `409` | Conflict with the current resource.             |
 
 ## [/api/hotels/]
 
@@ -80,7 +79,7 @@ API methods are defined as follows:
               "city": "City1",
               "address": "Address1"
           }
-+ Response 200 (application/json)
++ Response 201 (application/json)
 
     + Body
 
