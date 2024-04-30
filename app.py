@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
 PREFIX = "/api"
 api = Api(app, prefix=PREFIX)
 
-SWAGGER_URL = f'{PREFIX}/docs/'
+SWAGGER_URL = f'{PREFIX}/swagger/'
 API_URL = '/static/swagger.json'
 swagger_ui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={'app_name': "API-Hotel"})
 app.register_blueprint(swagger_ui_blueprint)
@@ -42,6 +42,21 @@ db.session.add(HotelModel(
     name="The Plaza",
     city="New York",
     address="Fifth Avenue at Central Park South"
+))
+db.session.add(HotelModel(
+    name="The Ritz",
+    city="London",
+    address="221B Baker Street"
+))
+db.session.add(HotelModel(
+    name="Raffles",
+    city="London",
+    address="4 Privet Drive"
+))
+db.session.add(HotelModel(
+    name="La Mamounia",
+    city="Hobbiton",
+    address="Bag End, Bagshot Row, Westfarthing, the Shire, Middle-Earth"
 ))
 db.session.commit()
 

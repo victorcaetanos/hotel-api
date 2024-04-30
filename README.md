@@ -1,5 +1,6 @@
 # hotel-api
-
+## Swagger Documentation
+ + /app/swagger
 ## Methods
 
 API methods are defined as follows:
