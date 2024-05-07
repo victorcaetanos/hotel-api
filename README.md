@@ -19,7 +19,7 @@ API methods are defined as follows:
 | `200` | Successful request carrying a payload body.     |
 | `201` | Successful request, resource created.           |
 | `204` | Successful request not carrying a payload body. |
-| `400` | Requested made with invalid syntax.             |
+| `400` | Request made with invalid syntax.             |
 | `404` | Requested information not found.                |
 
 ## [/api/hotels/]
