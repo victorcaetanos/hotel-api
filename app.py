@@ -91,7 +91,7 @@ class Hotels(Resource):
     def put(self):
         args = hotel_put_args.parse_args()
         if not args:
-            abort(400, message="Missing name, cannot insert")
+            abort(400, message="Missing body, cannot insert")
         if not args['name']:
             abort(400, message="Missing name, cannot insert")
         elif not args['city']:
